@@ -360,7 +360,7 @@ class FireTV:
         if self.launcher or self.settings:
             return STATE_STANDBY
         # Check for a wake lock (device is playing).
-        if self.wake_lock:
+        if self.wake_lock or self.media_playing:
             return STATE_PLAYING
         # Otherwise, device is paused.
         return STATE_PAUSED
@@ -441,6 +441,11 @@ class FireTV:
     def wake_lock(self):
         """Check for wake locks (device is playing)."""
         return not self._dump_has('power', 'Locks', 'size=0')
+    
+    @property
+    def media_playing(self):
+        """ Check for media session states """
+        return self._dump_has('media_session', 'PlaybackState', 'state=3')
 
     @property
     def launcher(self):
